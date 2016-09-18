@@ -32,8 +32,8 @@ class ftpwalker:
     def path_exit(self):
         while True:
             answer = input("""It seems that you've already
-                started traversing a server with this name.
-                Do you want to continue with current one(Y/N)?: """)
+started traversing a server with this name.
+Do you want to continue with current one(Y/N)?: """)
             if answer.strip().lower() in {'y', 'yes'}:
                 print("Start resuming the {} server...".format(self.name))
                 self.m_walker.Process_dispatcher(True)

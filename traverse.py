@@ -1,3 +1,16 @@
+"""
+===== 
+traverse.py 
+===== 
+
+
+
+Documentation created using SimpleRST. Source: https://github.com/Kasramvd/SimpleRST
+
+============================
+
+"""
+
 from walker import ftp_walker
 import ftplib
 from multiprocessing import Manager
@@ -9,7 +22,53 @@ import csv
 
 
 class Run(object):
+    """
+    ==============
+
+    ``Run``
+    ----------
+
+    .. py:class:: Run()
+
+
+
+       :rtype: UNKNOWN
+
+    .. note::
+
+    Example
+
+    .. code-block:: python
+	
+
+    .. todo::
+    """
     def __init__(self, name, server_url, root, server_path, resume):
+        """
+        .. py:attribute:: __init__()
+
+
+           :param name:
+           :type name:
+           :param server_url:
+           :type server_url:
+           :param root:
+           :type root:
+           :param server_path:
+           :type server_path:
+           :param resume:
+           :type resume:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         m = Manager()
         self.all_path = m.Queue()
         self.server_url = server_url
@@ -19,6 +78,25 @@ class Run(object):
         self.resume = resume
 
     def find_leading(self, top, thread_flag=True):
+        """
+        .. py:attribute:: find_leading()
+
+
+           :param top:
+           :type top:
+           :param thread_flag:
+           :type thread_flag:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         print ("Find leading...")
         length = 2
         conn = ftplib.FTP(self.server_url)
@@ -36,6 +114,23 @@ class Run(object):
         conn.quit()
 
     def traverse_branch(self, root='/'):
+        """
+        .. py:attribute:: traverse_branch()
+
+
+           :param root:
+           :type root:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         try:
             connection = ftplib.FTP(self.server_url)
             connection.login()
@@ -73,9 +168,43 @@ class Run(object):
             connection.quit()
 
     def find_all_leadings(self, leadings):
+        """
+        .. py:attribute:: find_all_leadings()
+
+
+           :param leadings:
+           :type leadings:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         return {path: self.find_leading(path) for path in leadings}
 
     def main_run(self, args):
+        """
+        .. py:attribute:: main_run()
+
+
+           :param args:
+           :type args:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         root, (base, leadings) = args
         print ('---' * 5, datetime.now(), '{}'.format(root), '---' * 5)
         try:

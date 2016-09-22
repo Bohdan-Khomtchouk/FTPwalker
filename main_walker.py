@@ -8,13 +8,37 @@ import csv
 
 
 class main_walker:
+    """
+    ==============
+
+    ``main_walker``
+    ----------
+    Main walker class.
+    .. py:class:: main_walker()
+
+    """
     def __init__(self, *args, **kwargs):
+        """
+        .. py:attribute:: __init__()
+
+           :rtype: None
+        """
         self.server_name = kwargs['server_name']
         self.url = kwargs['url']
         self.root = kwargs['root']
         self.server_path = kwargs['server_path']
+        self.json_path = kwargs['json_path']
 
     def Process_dispatcher(self, resume):
+        """
+        .. py:attribute:: Process_dispatcher()
+
+
+           :param resume:
+           :type resume:
+           :rtype: None
+
+        """
         run = Run(self.server_name,
                   self.url,
                   self.root,
@@ -49,7 +73,23 @@ class main_walker:
                 self.Process_dispatcher(True)
 
     def create_json(self, dictionary, name):
-        # json_path = ospath.join(*ospath.dirname(__file__).split('/')[:-1].__add__(
-        #    ['database/json_files/{}.json'.format(name)]))
-        with open('{}.json'.format(name), 'w') as fp:
-            json.dump(dictionary, fp, indent=4)
+        """
+        .. py:attribute:: create_json()
+
+
+           :param dictionary: dictionary of paths and files
+           :type dictionary: dict
+           :param name: server name
+           :type name: str
+           :rtype: None
+
+        """
+        try:
+            with open(self.json_path, 'w') as fp:
+                json.dump(dictionary, fp, indent=4)
+        except:
+            ospath.expanduser('~')
+            json_path = ospath.join(ospath.expanduser('~'), "FTPwalker_files/{}.json".format(name))
+            print("Your json path is invalid, file saved in {}".format(json_path))
+            with open(json_path) as fp:
+                json.dump(dictionary, fp, indent=4)

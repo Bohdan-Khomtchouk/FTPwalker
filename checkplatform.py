@@ -1,4 +1,13 @@
-"""Check the platform type."""
+"""
+=====
+checkplatform.py
+=====
+
+
+
+============================
+
+"""
 
 import platform
 
@@ -17,4 +26,5 @@ def check():
     elif "darwin" in platform_name:
         return "Mac"
     else:
-        raise Exception("Undefined platform")
+        raise Exception("""Undefined platform. This application has been designed
+for any of the Mac, Linux, Windows platforms. And your platform is {}""".format(platform_name))

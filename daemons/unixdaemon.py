@@ -1,3 +1,14 @@
+"""
+=====
+daemon.py
+=====
+
+Daemon service for Unix based platforms.
+Inspired by: http://code.activestate.com/recipes/66012-fork-a-daemon-process-on-unix/
+============================
+
+"""
+
 # -*- coding: utf-8 -*-
 
 import sys
@@ -7,7 +18,28 @@ from signal import SIGTERM
 
 
 class Daemon:
+    """
+    ==============
+
+    ``Daemon``
+    ----------
+
+    .. py:class:: Daemon()
+
+    """
     def __init__(self, stdout='/dev/null', stderr=None, stdin='/dev/null'):
+        """
+        .. py:attribute:: __init__()
+
+
+           :param stdout:
+           :type stdout:
+           :param stderr:
+           :type stderr:
+           :param stdin:
+           :type stdin:
+           :rtype: None
+        """
         self.stdout = stdout
         self.stderr = stderr
         self.stdin = stdin
@@ -15,15 +47,22 @@ class Daemon:
 
     def deamonize(self, pidfile=None):
         """
-            This forks the current process into a daemon.
-            The stdin, stdout, and stderr arguments are file names that
-            will be opened and be used to replace the standard file descriptors
-            in sys.stdin, sys.stdout, and sys.stderr.
-            These arguments are optional and default to /dev/null. You can change it
-            to something like '/tmp/deamonize.log' if you need to track the stdout.
-            Note that stderr is opened unbuffered, so
-            if it shares a file with stdout then interleaved output
-            may not appear in the order that you expect.
+        .. py:attribute:: deamonize()
+
+        This forks the current process into a daemon.
+        The stdin, stdout, and stderr arguments are file names that
+        will be opened and be used to replace the standard file descriptors
+        in sys.stdin, sys.stdout, and sys.stderr.
+        These arguments are optional and default to /dev/null. You can change it
+        to something like '/tmp/deamonize.log' if you need to track the stdout.
+        Note that stderr is opened unbuffered, so
+        if it shares a file with stdout then interleaved output
+        may not appear in the order that you expect.
+
+           :param pidfile:
+           :type pidfile:
+           :rtype: None
+
         """
         # Do first fork.
         try:
@@ -60,6 +99,17 @@ class Daemon:
                 f.write("{}\n".format(pid))
 
     def startstop(self, action, pidfile='pid.txt'):
+        """
+        .. py:attribute:: startstop()
+
+
+           :param action:
+           :type action:
+           :param pidfile:
+           :type pidfile:
+           :rtype: None
+
+        """
         try:
             with open(pidfile) as pf:
                 pid = int(pf.read().strip())
@@ -95,7 +145,25 @@ class Daemon:
         sys.exit(2)
 
 
-    def run(self, action, function=None):
-        self.startstop(action, pidfile='/tmp/deamonize.pid')
+    def start(self, function, *args):
+        """
+        .. py:attribute:: run()
+
+           :param function:
+           :type function:
+           :rtype: None
+
+        """
+        print("Start unix daemon...")
+        self.startstop("start", pidfile='/tmp/deamonize.pid')
         if function:
-            function()
+            function(*args)
+    def stop(self):
+        """
+        .. py:attribute:: run()
+
+           :rtype: None
+
+        """
+        print("Stop unix daemon...")
+        self.startstop("stop", pidfile='/tmp/deamonize.pid')

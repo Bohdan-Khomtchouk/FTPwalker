@@ -1,11 +1,79 @@
+"""
+===== 
+walker.py 
+===== 
+
+
+
+Documentation created using SimpleRST. Source: https://github.com/Kasramvd/SimpleRST
+
+============================
+
+"""
+
 from os import path as ospath
 
 
 class ftp_walker(object):
+    """
+    ==============
+
+    ``ftp_walker``
+    ----------
+
+    .. py:class:: ftp_walker()
+
+
+
+       :rtype: UNKNOWN
+
+    .. note::
+
+    Example
+
+    .. code-block:: python
+	
+
+    .. todo::
+    """
     def __init__(self, connection):
+        """
+        .. py:attribute:: __init__()
+
+
+           :param connection:
+           :type connection:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         self.connection = connection
 
     def listdir(self, _path):
+        """
+        .. py:attribute:: listdir()
+
+
+           :param _path:
+           :type _path:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         file_list, dirs, nondirs = [], [], []
         try:
             self.connection.cwd(_path)
@@ -23,6 +91,23 @@ class ftp_walker(object):
             return dirs, nondirs
 
     def Walk(self, path='/'):
+        """
+        .. py:attribute:: Walk()
+
+
+           :param path:
+           :type path:
+           :rtype: UNKNOWN
+
+        .. note::
+
+        Example
+
+        .. code-block:: python
+	
+
+        .. todo::
+        """
         dirs, nondirs = self.listdir(path)
         yield path, dirs, nondirs
         print ((path, dirs))

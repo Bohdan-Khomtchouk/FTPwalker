@@ -31,6 +31,12 @@ class ftpwalker:
     json_path: Corresponding path for saving the final json file.
     .. py:class:: ftpwalker()
 
+    .. note::
+
+    Example
+
+    .. code-block:: python
+
     """
     def __init__(self, server_name, url, root='/', daemon=False):
         """

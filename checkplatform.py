@@ -3,7 +3,7 @@
 checkplatform.py
 =====
 
-
+Check the platform type.
 
 ============================
 

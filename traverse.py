@@ -1,11 +1,9 @@
 """
-===== 
-traverse.py 
-===== 
+=====
+traverse.py
+=====
 
-
-
-Documentation created using SimpleRST. Source: https://github.com/Kasramvd/SimpleRST
+This module is responsible for dispatching the threads between subdirectories.
 
 ============================
 
@@ -30,44 +28,26 @@ class Run(object):
 
     .. py:class:: Run()
 
+    Main class for threads dispatcher.
 
-
-       :rtype: UNKNOWN
-
-    .. note::
-
-    Example
-
-    .. code-block:: python
-	
-
-    .. todo::
     """
     def __init__(self, name, server_url, root, server_path, resume):
         """
         .. py:attribute:: __init__()
 
 
-           :param name:
-           :type name:
-           :param server_url:
-           :type server_url:
-           :param root:
-           :type root:
-           :param server_path:
-           :type server_path:
-           :param resume:
-           :type resume:
-           :rtype: UNKNOWN
+           :param server_name: name of server
+           :type server_name: str
+           :param url: server's url
+           :type url: str
+           :param root: traversing start root
+           :type root: str
+           :param server_path: corresponding path for saving temporary files
+           :type server_path: str
+           :param resume: resume flag for resuming the traversing
+           :type resume: bool
+           :rtype: None
 
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         m = Manager()
         self.all_path = m.Queue()
@@ -82,20 +62,12 @@ class Run(object):
         .. py:attribute:: find_leading()
 
 
-           :param top:
-           :type top:
-           :param thread_flag:
-           :type thread_flag:
-           :rtype: UNKNOWN
+           :param top: The top root for starting the traversing
+           :type top: str
+           :param thread_flag: shows if leadings are for threads or not
+           :type thread_flag: boolean
+           :rtype: tuple
 
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         print ("Find leading...")
         length = 2
@@ -118,18 +90,10 @@ class Run(object):
         .. py:attribute:: traverse_branch()
 
 
-           :param root:
-           :type root:
-           :rtype: UNKNOWN
+           :param root: The root path for start traversing
+           :type root: str
+           :rtype: None
 
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         try:
             connection = ftplib.FTP(self.server_url)
@@ -172,38 +136,25 @@ class Run(object):
         .. py:attribute:: find_all_leadings()
 
 
-           :param leadings:
-           :type leadings:
-           :rtype: UNKNOWN
+           :param leadings: find all the leadings for all the subdirectories
+           :type leadings: list
+           :rtype: dict
 
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         return {path: self.find_leading(path) for path in leadings}
 
     def main_run(self, args):
         """
         .. py:attribute:: main_run()
+        Run threads by passing a leading directory to `traverse_branch` function.
 
+           :param args: a tuple contain root and another tuple contains base and
+           leadings. The root is the path of parent directory (assigned to a process)
+           base is a tuple contain the path of sub-directory and file names that are
+           associated with.
+           :type args: iterable
+           :rtype: None
 
-           :param args:
-           :type args:
-           :rtype: UNKNOWN
-
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         root, (base, leadings) = args
         print ('---' * 5, datetime.now(), '{}'.format(root), '---' * 5)

@@ -1,11 +1,9 @@
 """
-===== 
-walker.py 
-===== 
+=====
+walker.py
+=====
 
-
-
-Documentation created using SimpleRST. Source: https://github.com/Kasramvd/SimpleRST
+Traverse the FTP servers with BFS algorithm.
 
 ============================
 
@@ -23,36 +21,19 @@ class ftp_walker(object):
 
     .. py:class:: ftp_walker()
 
+    This class is contain corresponding functions for traversing the FTP
+    servers using BFS algorithm.
 
-
-       :rtype: UNKNOWN
-
-    .. note::
-
-    Example
-
-    .. code-block:: python
-	
-
-    .. todo::
     """
     def __init__(self, connection):
         """
         .. py:attribute:: __init__()
 
 
-           :param connection:
-           :type connection:
-           :rtype: UNKNOWN
+           :param connection: FTP connection object
+           :type connection: ftplib.connection
+           :rtype: None
 
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         self.connection = connection
 
@@ -60,19 +41,11 @@ class ftp_walker(object):
         """
         .. py:attribute:: listdir()
 
+        return files and directory names within a path (directory)
+           :param _path: path of a directory
+           :type _path: str
+           :rtype: tuple
 
-           :param _path:
-           :type _path:
-           :rtype: UNKNOWN
-
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         file_list, dirs, nondirs = [], [], []
         try:
@@ -94,19 +67,11 @@ class ftp_walker(object):
         """
         .. py:attribute:: Walk()
 
+        Walk through FTP server's directory tree
+           :param path: Leading path
+           :type path: str
+           :rtype: generator (path and files)
 
-           :param path:
-           :type path:
-           :rtype: UNKNOWN
-
-        .. note::
-
-        Example
-
-        .. code-block:: python
-	
-
-        .. todo::
         """
         dirs, nondirs = self.listdir(path)
         yield path, dirs, nondirs

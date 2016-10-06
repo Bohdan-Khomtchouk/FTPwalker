@@ -66,7 +66,7 @@ class ftpwalker:
                 except:
                     pass
             else:
-                from daemons.winservice import Service as daemon_obj
+                from daemons import windaemon as daemon_obj
         self.daemon = daemon
         try:
             server_path = path.join(path.dirname(__file__), self.name)

@@ -1,8 +1,8 @@
-from new_winservice import Service, instart
+from winservice import Service, instart
 import win32serviceutil
 
 
-class Test(Service):
+class Daemon(Service):
     def __setattr__(self, name, value):
         setattr(name, value)
 
@@ -14,12 +14,13 @@ class Test(Service):
 
 
 def initialize(executable):
-    Test.start = lambda self: executable()
+    Daemon.start = lambda self: executable()
 
 
 def start(executable):
     initialize(executable)
-    instart(Test, 'FTPwalker', 'FTPwalker', stay_alive=False)
+    instart(Daemon, 'FTPwalker', 'FTPwalker', stay_alive=False)
+
 
 def stop():
     win32serviceutil.StopService('FTPwalker')

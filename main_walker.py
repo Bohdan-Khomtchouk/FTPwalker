@@ -27,7 +27,7 @@ class main_walker:
         self.url = kwargs['url']
         self.root = kwargs['root']
         self.server_path = kwargs['server_path']
-        self.json_path = kwargs['json_path']
+        self.json_path = kwargs.get('json_path')
 
     def Process_dispatcher(self, resume):
         """

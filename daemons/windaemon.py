@@ -13,12 +13,12 @@ class Daemon(Service):
         self.log("I'm done")
 
 
-def initialize(executable):
-    Daemon.start = lambda self: executable()
+def initialize(executable, *args):
+    Daemon.start = lambda self: executable(*args)
 
 
-def start(executable):
-    initialize(executable)
+def start(executable, *args):
+    initialize(executable, *args)
     instart(Daemon, 'FTPwalker', 'FTPwalker', stay_alive=False)
 
 

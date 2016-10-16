@@ -1,4 +1,4 @@
-from winservice import Service, instart
+from .winservice import Service, instart
 import win32serviceutil
 
 
@@ -23,4 +23,5 @@ def start(executable, *args):
 
 
 def stop():
-    win32serviceutil.StopService('FTPwalker')
+    import os
+    os.system("sc delete FTPwalker")

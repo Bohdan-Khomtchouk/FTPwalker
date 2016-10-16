@@ -63,14 +63,14 @@ class ftpwalker:
                 daemon_obj = daemon_obj()
                 try:
                     daemon_obj.stop()
-                except:
-                    pass
+                except exception as exc:
+                    print("Exception:  {}".format(exc))
             else:
                 from daemons import windaemon as daemon_obj
                 try:
                     daemon_obj.stop()
-                except:
-                    pass
+                except Exception as exc:
+                    print("Exception:  {}".format(exc))
         self.daemon = daemon
         try:
             server_path = path.join(path.dirname(__file__), self.name)
@@ -91,14 +91,17 @@ class ftpwalker:
 
            :rtype: None
         """
-        if path.isdir(self.server_path):
-            if len(listdir(self.server_path)) > 0:
-                self.path_exit()
+        try:
+            if path.isdir(self.server_path):
+                if len(listdir(self.server_path)) > 0:
+                    self.path_exit()
+                else:
+                    self.path_not_exit(False)
             else:
-                self.path_not_exit(False)
-        else:
-            self.path_not_exit(True)
-        daemon_obj.stop()
+                self.path_not_exit(True)
+        except:
+            print("stoping the service!")
+            daemon_obj.stop()
 
     def path_exit(self):
         """

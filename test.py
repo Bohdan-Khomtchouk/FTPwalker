@@ -1,4 +1,4 @@
 from runwalker import ftpwalker
 
-walker = ftpwalker("PairsDB", "nic.funet.fi", daemon=True)
+walker = ftpwalker('miRBase', 'mirbase.org', daemon=True)
 walker.chek_state()

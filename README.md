@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/Bohdan-Khomtchouk/FTPwalker.svg?branch=master)](https://travis-ci.org/Bohdan-Khomtchouk/FTPwalker)
+[![PyPI version](https://badge.fury.io/py/FTPwalker.svg)](https://badge.fury.io/py/FTPwalker)
+
 # FTPwalker
 
 `FTPwalker` is a Python package for optimally traversing extremely large FTP directory trees.  It constitutes the algorithmic heart of the PubData search engine: https://github.com/Bohdan-Khomtchouk/PubData.

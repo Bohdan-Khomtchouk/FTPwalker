@@ -4,7 +4,7 @@
 
 # FTPwalker
 
-`FTPwalker` is a Python package for optimally traversing extremely large FTP directory trees.  It constitutes the algorithmic heart of the PubData search engine: https://github.com/Bohdan-Khomtchouk/PubData.
+`FTPwalker` is a Python package for optimally traversing extremely large FTP directory trees.  It constitutes the algorithmic heart of the [PubData](https://github.com/Bohdan-Khomtchouk/PubData) search engine.
 
 ## Funding
 

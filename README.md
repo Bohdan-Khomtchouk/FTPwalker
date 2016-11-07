@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Bohdan-Khomtchouk/FTPwalker.svg?branch=master)](https://travis-ci.org/Bohdan-Khomtchouk/FTPwalker)
+[![Open Source Love](https://badges.frapsoft.com/os/gpl/gpl.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 [![PyPI version](https://badge.fury.io/py/FTPwalker.svg)](https://badge.fury.io/py/FTPwalker)
 
 # FTPwalker

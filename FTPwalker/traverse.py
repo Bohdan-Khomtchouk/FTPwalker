@@ -9,13 +9,14 @@ This module is responsible for dispatching the threads between subdirectories.
 
 """
 
-from walker import ftp_walker
+from . import walker
 import ftplib
 from multiprocessing import Manager
 from datetime import datetime
 from multiprocessing.dummy import Pool as ThreadPool
 import socket
 from os import path as ospath, listdir
+from collections import deque
 import csv
 
 
@@ -73,8 +74,8 @@ class Run(object):
         length = 2
         conn = ftplib.FTP(self.server_url)
         conn.login()
-        fw = ftp_walker(conn)
-        for p, dirs, files in fw.Walk(top):
+        fw = walker.ftp_walker(conn)
+        for p, dirs, files in fw.walk(top):
             length = len(dirs)
             base = [(p, files)]
             if length > 1:
@@ -85,7 +86,7 @@ class Run(object):
                 return base, []
         conn.quit()
 
-    def traverse_branch(self, root='/'):
+    def traverse_branch(self, args):
         """
         .. py:attribute:: traverse_branch()
 
@@ -95,39 +96,29 @@ class Run(object):
            :rtype: None
 
         """
+        root, all_path = args
         try:
             connection = ftplib.FTP(self.server_url)
             connection.login()
             # connection.cwd(root)
         except Exception as exp:
-            print (exp.__str__())
+            print ("Couldn't create the connections for thread {}".format(exp))
         else:
-            root_name = root.replace('/', '_')
-            last_path = None
             # file_names = listdir(self.server_path)
-            fw = ftp_walker(connection)
-            flag = False
-            try:
-                with open(ospath.join(self.server_path, "{}.csv".format(root_name))) as f:
-                    csv_reader = csv.reader(f)
-                    for row in csv_reader:
-                        last_path = row[0]
-            except:
-                last_path = root
+            fw = walker.ftp_walker(connection, self.resume)
+            if self.resume:
+                walker_obj = fw.walk_resume(all_path, root)
+                next(walker_obj)
             else:
-                flag = True
-            finally:
-                if not last_path:
-                    last_path = root
-                walker_obj = fw.Walk(last_path)
-                if flag:
-                    next(walker_obj)
+                walker_obj = fw.walk(root)
+            root_name = root.replace('/', '_')
 
             with open('{}/{}.csv'.format(self.server_path, root_name), 'a') as f:
                 csv_writer = csv.writer(f)
                 for _path, _, files in walker_obj:
                     # self.all_path.put((_path, files))
                     csv_writer.writerow([_path] + files)
+
                 # csv_writer.writerow(("TRAVERSING_FINISHED",))
             connection.quit()
 
@@ -163,12 +154,30 @@ class Run(object):
             # print("base and leadings for {} --> {}, {}".format(root, base, leadings))
             leadings = [ospath.join('/', root, i.strip('/')) for i in leadings]
             if leadings:
+                if self.resume:
+                    print("Resuming...")
+                    leadings = self.find_latest_leadings(leadings)
+                else:
+                    leadings = [(i, None) for i in leadings]
+
                 pool = ThreadPool()
                 pool.map(self.traverse_branch, leadings)
                 pool.close()
                 pool.join()
-                # connection.quit()
             else:
                 self.all_path.put(base[0])
         except (ftplib.error_temp, ftplib.error_perm, socket.gaierror) as exp:
-            print (exp)
+            print(exp)
+
+    def find_latest_leadings(self, leadings):
+        for root in leadings:
+            f_name = ospath.join(self.server_path, "{}.csv".format(root).replace('/', '_'))
+            try:
+                with open(f_name) as f:
+                    csv_reader = csv.reader(f)
+                    all_path = next(zip(*csv_reader))
+            except FileNotFoundError:
+                # file is empty or doesn't exist
+                all_path = [root]
+            finally:
+                yield root, all_path

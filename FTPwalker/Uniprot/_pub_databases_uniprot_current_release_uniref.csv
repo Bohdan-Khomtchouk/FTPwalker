@@ -1,0 +1,4 @@
+/pub/databases/uniprot/current_release/uniref
+/pub/databases/uniprot/current_release/uniref/uniref100,README,RELEASE.metalink,uniref.xsd,uniref100.fasta.gz,uniref100.release_note,uniref100.xml.gz
+/pub/databases/uniprot/current_release/uniref/uniref50,README,RELEASE.metalink,uniref.xsd,uniref50.dtd,uniref50.fasta.gz,uniref50.release_note,uniref50.xml.gz
+/pub/databases/uniprot/current_release/uniref/uniref90,README,RELEASE.metalink,uniref.xsd,uniref90.dtd,uniref90.fasta.gz,uniref90.release_note,uniref90.xml.gz

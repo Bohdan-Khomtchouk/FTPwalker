@@ -10,10 +10,10 @@ running a new walker.
 
 """
 
-import main_walker
+from FTPwalker import main_walker
 from os import path, makedirs, listdir
 import shutil
-import checkplatform
+from FTPwalker import checkplatform
 import re
 
 
@@ -57,18 +57,18 @@ class ftpwalker:
         platform_name = checkplatform.check()
         if daemon:
             print("Platform {}".format(platform_name))
-            global daemon_obj
             if platform_name in {"Linux", "Mac"}:
                 from daemons.unixdaemon import Daemon as daemon_obj
-                daemon_obj = daemon_obj()
+                self.daemon_obj = daemon_obj()
                 try:
-                    daemon_obj.stop()
-                except exception as exc:
+                    self.daemon_obj.stop()
+                except Exception as exc:
                     print("Exception:  {}".format(exc))
             else:
                 from daemons import windaemon as daemon_obj
+                self.daemon_obj = daemon_obj
                 try:
-                    daemon_obj.stop()
+                    self.daemon_obj.stop()
                 except Exception as exc:
                     print("Exception:  {}".format(exc))
         self.daemon = daemon
@@ -83,9 +83,9 @@ class ftpwalker:
                                                 server_path=self.server_path,
                                                 root=root)
 
-    def chek_state(self):
+    def check_state(self):
         """
-        .. py:attribute:: chek_state()
+        .. py:attribute:: check_state()
         Check the current state. If a wanlker kas been run already
         it asks for continue or aborting, otherwise it starts the traversing.
 
@@ -100,8 +100,9 @@ class ftpwalker:
             else:
                 self.path_not_exit(True)
         except:
-            print("stoping the service!")
-            daemon_obj.stop()
+            if self.daemon:
+                self.daemon_obj.stop()
+            raise
 
     def path_exit(self):
         """

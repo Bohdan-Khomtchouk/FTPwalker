@@ -1,0 +1,17 @@
+FTPwalker is a Python package for optimally traversing extremely large FTP directory trees.
+
+Here is an example of FTPwalker traversing the miRBase_ bioinformatics database:
+
+.. code-block:: python
+
+	from FTPwalker.runwalker import ftpwalker
+
+	walker = ftpwalker("Uniprot", "ftp.uniprot.org")
+	walker.check_state()
+
+
+
+This will create a dictionary formatted as a JSON file in the user’s home directory containing all the full paths as keys and the respective filenames as values. FTPwalker is designed with speed in mind by utilizing state-of-the-art high performance parallelism and concurrency algorithms to traverse FTP directory trees. The resultant hash table (i.e., dictionary) supports fast lookup for any file in any biological database.
+
+
+.. _miRBase: http://mirbase.org

@@ -15,8 +15,8 @@ from multiprocessing import Manager
 from datetime import datetime
 from multiprocessing.dummy import Pool as ThreadPool
 import socket
-from os import path as ospath, listdir
-from collections import deque
+from os import path as ospath
+import json
 import csv
 
 
@@ -32,7 +32,7 @@ class Run(object):
     Main class for threads dispatcher.
 
     """
-    def __init__(self, name, server_url, root, server_path, resume):
+    def __init__(self, name, server_url, root, server_path, meta_path, resume):
         """
         .. py:attribute:: __init__()
 
@@ -56,6 +56,7 @@ class Run(object):
         self.root = root
         self.name = name
         self.server_path = server_path
+        self.meta_path = meta_path
         self.resume = resume
 
     def find_leading(self, top, thread_flag=True):
@@ -115,9 +116,22 @@ class Run(object):
 
             with open('{}/{}.csv'.format(self.server_path, root_name), 'a') as f:
                 csv_writer = csv.writer(f)
-                for _path, _, files in walker_obj:
-                    # self.all_path.put((_path, files))
-                    csv_writer.writerow([_path] + files)
+                try:
+                    for _path, _, files in walker_obj:
+                        # self.all_path.put((_path, files))
+                        csv_writer.writerow([_path] + files)
+                except:
+                    pass
+                else:
+                    with open(self.meta_path, 'r+') as f:
+                        try:
+                            meta = json.load(f)
+                            meta.setdefault('traversed_subs', []).append(root_name)
+                        except:
+                            pass
+                        else:
+                            f.seek(0)
+                            json.dump(meta, f)
 
                 # csv_writer.writerow(("TRAVERSING_FINISHED",))
             connection.quit()

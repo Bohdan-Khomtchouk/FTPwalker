@@ -73,7 +73,8 @@ class ftpwalker:
                     print("Exception:  {}".format(exc))
         self.daemon = daemon
         try:
-            server_path = path.join(path.dirname(__file__), self.name)
+            home = path.expanduser("~")
+            server_path = path.join(home, "FTPwalkerfile/", self.name)
         except Exception as exc:
             raise Exception("Please enter a valid name. {}".format(exc))
         else:
@@ -120,7 +121,7 @@ Do you want to continue with current one(Y/N)?: """)
             if answer.strip().lower() in {'y', 'yes'}:
                 print("Start resuming the {} server...".format(self.name))
                 if self.daemon:
-                    daemon_obj.start(self.m_walker.Process_dispatcher, True)
+                    self.daemon_obj.start(self.m_walker.Process_dispatcher, True)
                 else:
                     self.m_walker.Process_dispatcher(True)
                 break
@@ -128,7 +129,7 @@ Do you want to continue with current one(Y/N)?: """)
                 # deleting the directory
                 shutil.rmtree(self.server_path)
                 if self.daemon:
-                    daemon_obj.start(self.m_walker.Process_dispatcher, False)
+                    self.daemon_obj.start(self.m_walker.Process_dispatcher, False)
                 else:
                     self.m_walker.Process_dispatcher(False)
                 break
@@ -150,6 +151,6 @@ Do you want to continue with current one(Y/N)?: """)
         if create_dir:
             makedirs(self.server_path)
         if self.daemon:
-            daemon_obj.start(self.m_walker.Process_dispatcher, False)
+            self.daemon_obj.start(self.m_walker.Process_dispatcher, False)
         else:
             self.m_walker.Process_dispatcher(False)

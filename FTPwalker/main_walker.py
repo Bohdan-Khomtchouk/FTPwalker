@@ -28,6 +28,8 @@ class main_walker:
         self.root = kwargs['root']
         self.server_path = kwargs['server_path']
         self.json_path = kwargs.get('json_path')
+        if not self.json_path:
+            self.json_path = self.server_path
 
     def Process_dispatcher(self, resume):
         """

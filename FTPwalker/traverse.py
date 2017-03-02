@@ -84,6 +84,7 @@ class Run(object):
                 return base, dirs
             elif thread_flag:
                 return base, []
+        return base, []
         conn.quit()
 
     def traverse_branch(self, args):

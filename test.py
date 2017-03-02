@@ -1,6 +1,6 @@
 from FTPwalker.runwalker import ftpwalker
 
 
-walker = ftpwalker("Uniprot", "ftp.uniprot.org")
+walker = ftpwalker("test", "ftp.kh.edu.tw")
 
 walker.check_state()

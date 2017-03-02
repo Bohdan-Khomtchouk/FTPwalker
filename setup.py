@@ -9,7 +9,7 @@ def read(fname):
 
 setup(name='FTPwalker',
       packages=['FTPwalker', "FTPwalker/daemons"],
-      version='0.3',
+      version='0.4',
       description='Optimally traversing extremely large FTP directory trees.',
       author='Bohdan Khomtchouk and Kasra Vand',
       author_email='khomtchoukmed@gmail.com, kasraavand@gmail.com',

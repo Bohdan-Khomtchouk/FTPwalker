@@ -9,7 +9,7 @@ This module is responsible for dispatching the threads between subdirectories.
 
 """
 
-from . import walker
+import walker
 import ftplib
 from multiprocessing import Manager
 from datetime import datetime
@@ -79,7 +79,7 @@ class Run(object):
         for p, dirs, files in fw.walk(top):
             length = len(dirs)
             base = [(p, files)]
-            if length > 1:
+            if length >= 1:
                 p = '/'.join(p.split('/')[1:])
                 length = length
                 return base, dirs

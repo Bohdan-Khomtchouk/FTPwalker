@@ -10,10 +10,10 @@ running a new walker.
 
 """
 
-from FTPwalker import main_walker
+import main_walker
 from os import path, makedirs, listdir
 import shutil
-from FTPwalker import checkplatform
+import checkplatform
 import re
 
 
@@ -63,7 +63,7 @@ class ftpwalker:
                 try:
                     self.daemon_obj.stop()
                 except Exception as exc:
-                    print("Exception:  {}".format(exc))
+                    print("Exception on stopping the daemon:  {}".format(exc))
             else:
                 from daemons import windaemon as daemon_obj
                 self.daemon_obj = daemon_obj

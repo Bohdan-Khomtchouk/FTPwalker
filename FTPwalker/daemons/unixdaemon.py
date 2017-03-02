@@ -158,6 +158,7 @@ class Daemon:
         self.startstop("start", pidfile='/tmp/deamonize.pid')
         if function:
             function(*args)
+
     def stop(self):
         """
         .. py:attribute:: run()
@@ -166,4 +167,7 @@ class Daemon:
 
         """
         print("Stop unix daemon...")
-        self.startstop("stop", pidfile='/tmp/deamonize.pid')
+        try:
+            self.startstop("stop", pidfile='/tmp/deamonize.pid')
+        except:
+            pass

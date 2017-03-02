@@ -1,4 +1,4 @@
 from runwalker import ftpwalker
 
-walker = ftpwalker('miRBase', 'mirbase.org', daemon=True)
-walker.chek_state()
+walker = ftpwalker('uniport', 'ftp.uniprot.org')
+walker.check_state()

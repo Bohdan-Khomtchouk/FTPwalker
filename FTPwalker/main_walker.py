@@ -30,6 +30,7 @@ class main_walker:
         self.json_path = kwargs.get('json_path')
         if not self.json_path:
             self.json_path = self.server_path
+        self.meta_path = ospath.join(self.server_path, 'metadata.json')
 
     def Process_dispatcher(self, resume):
         """
@@ -45,6 +46,7 @@ class main_walker:
                            self.url,
                            self.root,
                            self.server_path,
+                           self.meta_path
                            resume)
         base, leadings = run.find_leading(self.root, thread_flag=False)
         path, _ = base[0]
@@ -54,6 +56,8 @@ class main_walker:
         all_leadings = run.find_all_leadings(leadings)
         lenght_of_subdirectories = sum(len(dirs) for _, (_, dirs) in all_leadings.items())
         print("{} subdirectories founded".format(lenght_of_subdirectories))
+        with open(self.meta_path, 'w') as f:
+            json.dump({'subdirectory_number': lenght_of_subdirectories}, f)
         try:
             pool = Pool()
             pool.map(run.main_run, all_leadings.items())
@@ -61,8 +65,11 @@ class main_walker:
             print(exp)
         else:
             print ('***' * 5, datetime.now(), '***' * 5)
-            file_names = listdir(self.server_path)
-            if lenght_of_subdirectories == len(file_names):
+            with open(self.meta_path) as f:
+                meta = json.load(f)
+                traversed_subs = meta['traversed_subs']
+                lenght_of_subdirectories = meta['subdirectory_number']
+            if lenght_of_subdirectories == len(traversed_subs):
                 main_dict = OrderedDict()
                 for name in file_names:
                     with open(ospath.join(self.server_path, name)) as f:
@@ -72,7 +79,7 @@ class main_walker:
                 self.create_json(main_dict, self.server_name)
             else:
                 print("Traversing isn't complete. Start resuming the {} server...".format(self.server_name))
-                self.Process_dispatcher(True)
+                self.Process_dispatcher(resume)
 
     def create_json(self, dictionary, name):
         """

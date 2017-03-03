@@ -114,7 +114,6 @@ class Run(object):
             else:
                 walker_obj = fw.walk(root)
             root_name = root.replace('/', '_')
-
             with open('{}/{}.csv'.format(self.server_path, root_name), 'a') as f:
                 csv_writer = csv.writer(f)
                 try:
@@ -133,6 +132,8 @@ class Run(object):
                         else:
                             f.seek(0)
                             json.dump(meta, f)
+
+
 
                 # csv_writer.writerow(("TRAVERSING_FINISHED",))
             connection.quit()
@@ -183,16 +184,3 @@ class Run(object):
                 self.all_path.put(base[0])
         except (ftplib.error_temp, ftplib.error_perm, socket.gaierror) as exp:
             print(exp)
-
-    def find_latest_leadings(self, leadings):
-        for root in leadings:
-            f_name = ospath.join(self.server_path, "{}.csv".format(root).replace('/', '_'))
-            try:
-                with open(f_name) as f:
-                    csv_reader = csv.reader(f)
-                    all_path = next(zip(*csv_reader))
-            except FileNotFoundError:
-                # file is empty or doesn't exist
-                all_path = [root]
-            finally:
-                yield root, all_path

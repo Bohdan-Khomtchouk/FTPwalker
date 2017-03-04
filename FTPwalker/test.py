@@ -1,4 +1,4 @@
 from runwalker import ftpwalker
 
-walker = ftpwalker('uniport', 'ftp.uniprot.org')
+walker = ftpwalker("Pasteur Insitute", "ftp.pasteur.fr")
 walker.check_state()

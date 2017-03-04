@@ -31,13 +31,14 @@ class main_walker:
         if not self.json_path:
             self.json_path = self.server_path
         self.meta_path = ospath.join(ospath.dirname(self.server_path), 'metadata.json')
+        self.run_object = None
 
     def find_leading_dirs(self, top):
-        base, leadings = run.find_leading(top, thread_flag=False)
+        base, leadings = self.run_object.find_leading(top, thread_flag=False)
         _path, files = base[0]
         # Preserve the current directory path and files before deviding them between
         # threads and processors.
-        with open('{}/{}.csv'.format(self.server_path, "leading_ftpwalker"), 'a') as f:
+        with open('{}/{}.csv'.format(self.server_path, "leading_ftpwalker"), 'a+') as f:
             csv_writer = csv.writer(f)
             try:
                 # self.all_path.put((_path, files))
@@ -58,16 +59,17 @@ class main_walker:
            :rtype: None
 
         """
-        run = traverse.Run(self.server_name,
-                           self.url,
-                           self.root,
-                           self.server_path,
-                           self.meta_path,
-                           resume)
+        self.run_object = traverse.Run(self.server_name,
+                                       self.url,
+                                       self.root,
+                                       self.server_path,
+                                       self.meta_path,
+                                       resume)
         if resume:
             # If resume is valid, this means that there is a file within server_path
             # directory which can be any of leading directories or the leading_ftpwalker
-            pass
+            leadings = self.find_latest_leadings()
+            all_leadings = self.run_object.find_all_leadings(leadings)
         else:
 
             while True:
@@ -83,18 +85,19 @@ class main_walker:
 
             print ("Root's leadings are: ", leadings)
 
-            all_leadings = run.find_all_leadings(leadings)
+            all_leadings = self.run_object.find_all_leadings(leadings)
             lenght_of_subdirectories = sum(len(dirs) for _, (_, dirs) in all_leadings.items())
             print("{} subdirectories founded".format(lenght_of_subdirectories))
+            all_file_names = [i.replace('/', '_')for _, (_, leads) in all_leadings.items() for i in leads]
             with open(self.meta_path, 'w') as f:
                 json.dump({'subdirectory_number': lenght_of_subdirectories,
                            'traversed_subs': [],
-                           'all_leadings': all_leadings}, f)
+                           'all_file_names': all_file_names}, f)
         try:
             pool = Pool()
-            pool.map(run.main_run, all_leadings.items())
+            pool.map(self.run_object.main_run, all_leadings.items())
         except Exception as exp:
-            print(exp)
+            raise
         else:
             print ('***' * 5, "finish traversing", '***' * 5)
             with open(self.meta_path) as f:
@@ -114,24 +117,28 @@ class main_walker:
                 print("Traversing isn't complete. Start resuming the {} server...".format(self.server_name))
                 self.Process_dispatcher(resume)
 
-    def find_latest_leadings(self, leadings):
+    def find_latest_leadings(self):
         with open(self.meta_path) as f:
             meta = json.load(f)
             traversed_subs = meta['traversed_subs']
-            all_leadings = meta['all_leading']
-        for file_name in listdir(self.server_path):
+            all_file_names = meta['all_file_names']
+            exist_files = listdir(self.server_path)
+        for file_name in exist_files:
             # check if the directory is not traversed already
             if file_name not in traversed_subs:
                 f_name = ospath.join(self.server_path, file_name)
                 try:
                     with open(f_name) as f:
                         csv_reader = csv.reader(f)
-                        lates_path = deque(csv_reader, maxlen=1).pop().replace('_', '/')
-                except (FileNotFoundError, IndexError):
-                    # file is empty or doesn't exist
+                        lates_path = deque(csv_reader, maxlen=1).pop()[0].replace('_', '/')
+                except IndexError:
+                    # file is empty
                     lates_path = file_name.replace('_', '/')
                 finally:
                     yield lates_path
+        # yield non-traversed directories
+        for f_name in set(all_file_names).difference(traversed_subs):
+            yield file_name.replace('_', '/')
 
     def create_json(self, dictionary, name):
         """

@@ -98,7 +98,7 @@ class Run(object):
            :rtype: None
 
         """
-        root, all_path = args
+        all_path, root = args
         try:
             connection = ftplib.FTP(self.server_url)
             connection.login()
@@ -133,9 +133,6 @@ class Run(object):
                             f.seek(0)
                             json.dump(meta, f)
 
-
-
-                # csv_writer.writerow(("TRAVERSING_FINISHED",))
             connection.quit()
 
     def find_all_leadings(self, leadings):
@@ -168,14 +165,8 @@ class Run(object):
         try:
             # base, leadings = self.find_leading(root)
             # print("base and leadings for {} --> {}, {}".format(root, base, leadings))
-            leadings = [ospath.join('/', root, i.strip('/')) for i in leadings]
+            leadings = [(ospath.join('/', root, i.strip('/')), root) for i in leadings]
             if leadings:
-                if self.resume:
-                    print("Resuming...")
-                    leadings = self.find_latest_leadings(leadings)
-                else:
-                    leadings = [(i, None) for i in leadings]
-
                 pool = ThreadPool()
                 pool.map(self.traverse_branch, leadings)
                 pool.close()

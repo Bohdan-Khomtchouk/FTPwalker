@@ -128,6 +128,7 @@ Do you want to continue with current one(Y/N)?: """)
             elif answer.strip().lower() in {'n', 'no'}:
                 # deleting the directory
                 shutil.rmtree(self.server_path)
+                makedirs(self.server_path)
                 if self.daemon:
                     self.daemon_obj.start(self.m_walker.Process_dispatcher, False)
                 else:

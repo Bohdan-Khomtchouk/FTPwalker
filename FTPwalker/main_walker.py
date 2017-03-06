@@ -68,11 +68,19 @@ class main_walker:
         if resume:
             # If resume is valid, this means that there is a file within server_path
             # directory which can be any of leading directories or the leading_ftpwalker
-            leadings = self.find_latest_leadings()
-            all_leadings = self.run_object.find_all_leadings(leadings)
+            all_leadings = {}
+            for p in self.find_latest_leadings():
+                print(p)
+                try:
+                    base, _ = p.strip('/').split('/', 1)
+                except:
+                    pass
+                else:
+                    all_leadings.setdefault(base, []).append(p)
+            # all_leadings = self.run_object.find_all_leadings(leadings)
         else:
-
-            while True:
+            leadings = []
+            while len(leadings) <= 1:
                 leadings = self.find_leading_dirs(self.root)
                 if len(leadings) == 0:
                     print("Empty directory!")
@@ -88,13 +96,14 @@ class main_walker:
             all_leadings = self.run_object.find_all_leadings(leadings)
             lenght_of_subdirectories = sum(len(dirs) for _, (_, dirs) in all_leadings.items())
             print("{} subdirectories founded".format(lenght_of_subdirectories))
-            all_file_names = [i.replace('/', '_')for _, (_, leads) in all_leadings.items() for i in leads]
+            all_lead_names = [i.replace('/', '_')for _, (_, leads) in all_leadings.items() for i in leads]
             with open(self.meta_path, 'w') as f:
                 json.dump({'subdirectory_number': lenght_of_subdirectories,
                            'traversed_subs': [],
-                           'all_file_names': all_file_names}, f)
+                           'all_lead_names': all_lead_names}, f)
         try:
             pool = Pool()
+            print(all_leadings)
             pool.map(self.run_object.main_run, all_leadings.items())
         except Exception as exp:
             raise
@@ -121,8 +130,11 @@ class main_walker:
         with open(self.meta_path) as f:
             meta = json.load(f)
             traversed_subs = meta['traversed_subs']
-            all_file_names = meta['all_file_names']
+            all_lead_names = meta['all_lead_names']
             exist_files = listdir(self.server_path)
+        with open(ospath.join(self.server_path, 'leading_ftpwalker.csv')) as f:
+            # Dirs that were contain one directory and have been preserved in leading_ftpwalker file
+            ommited_dirs = ospath.join(*next(zip(*csv.reader(f))))
         for file_name in exist_files:
             # check if the directory is not traversed already
             if file_name not in traversed_subs:
@@ -131,14 +143,16 @@ class main_walker:
                     with open(f_name) as f:
                         csv_reader = csv.reader(f)
                         lates_path = deque(csv_reader, maxlen=1).pop()[0].replace('_', '/')
+                        lates_path = ospath.join(ommited_dirs, lates_path)
                 except IndexError:
                     # file is empty
-                    lates_path = file_name.replace('_', '/')
+                    lates_path = file_name.split('.')[0].replace('_', '/')
+                    lates_path = ospath.join(ommited_dirs, lates_path)
                 finally:
                     yield lates_path
         # yield non-traversed directories
-        for f_name in set(all_file_names).difference(traversed_subs):
-            yield file_name.replace('_', '/')
+        for f_name in set(all_lead_names).difference(traversed_subs):
+            yield ospath.join(ommited_dirs, f_name.split('.')[0].replace('_', '/'))
 
     def create_json(self, dictionary, name):
         """

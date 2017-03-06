@@ -98,7 +98,11 @@ class Run(object):
            :rtype: None
 
         """
-        all_path, root = args
+        print(args)
+        if self.resume:
+            _path = args
+        else:
+            _path, root = args
         try:
             connection = ftplib.FTP(self.server_url)
             connection.login()
@@ -109,12 +113,12 @@ class Run(object):
             # file_names = listdir(self.server_path)
             fw = walker.ftp_walker(connection, self.resume)
             if self.resume:
-                walker_obj = fw.walk_resume(all_path, root)
+                walker_obj = fw.walk(_path)
                 next(walker_obj)
             else:
                 walker_obj = fw.walk(root)
-            root_name = root.replace('/', '_')
-            with open('{}/{}.csv'.format(self.server_path, root_name), 'a') as f:
+            root_name = ospath.basename(_path).replace('/', '_')
+            with open('{}/{}.csv'.format(self.server_path, root_name), 'a+') as f:
                 csv_writer = csv.writer(f)
                 try:
                     for _path, _, files in walker_obj:
@@ -160,12 +164,17 @@ class Run(object):
            :rtype: None
 
         """
-        root, (base, leadings) = args
+        if self.resume:
+            root, leadings = args
+            base = ['/']
+        else:
+            root, (base, leadings) = args
         print ('---' * 5, datetime.now(), '{}'.format(root), '---' * 5)
         try:
             # base, leadings = self.find_leading(root)
             # print("base and leadings for {} --> {}, {}".format(root, base, leadings))
-            leadings = [(ospath.join('/', root, i.strip('/')), root) for i in leadings]
+            if not self.resume:
+                leadings = [(ospath.join('/', root, i.strip('/')), root) for i in leadings]
             if leadings:
                 pool = ThreadPool()
                 pool.map(self.traverse_branch, leadings)

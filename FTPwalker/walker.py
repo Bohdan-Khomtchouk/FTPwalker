@@ -52,7 +52,7 @@ class ftp_walker(object):
         try:
             self.connection.cwd(_path)
         except Exception as exp:
-            print ("the current path is : ", self.connection.pwd(), exp.__str__(), _path)
+            print ("the current path is : ", self.connection.pwd(), exp.__str__(),_path)
             return [], []
         else:
             self.connection.retrlines('LIST', lambda x: file_list.append(x.split()))
@@ -74,7 +74,6 @@ class ftp_walker(object):
             for name in diffs:
                 name = ospath.join(parent, name)
                 yield from self.walk(name)
-
         current_path = paths[-1]
         parent = ospath.dirname(current_path)
         if current_path == root:

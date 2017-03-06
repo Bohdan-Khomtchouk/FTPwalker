@@ -70,14 +70,15 @@ class main_walker:
             # directory which can be any of leading directories or the leading_ftpwalker
             all_leadings = {}
             for p in self.find_latest_leadings():
-                print(p)
                 try:
                     base, _ = p.strip('/').split('/', 1)
-                except:
-                    pass
+                except Exception as exc:
+                    print([exc, p])
                 else:
                     all_leadings.setdefault(base, []).append(p)
             # all_leadings = self.run_object.find_all_leadings(leadings)
+            print(all_leadings)
+            raise Exception("lol")
         else:
             leadings = []
             while len(leadings) <= 1:

@@ -71,14 +71,14 @@ class main_walker:
             all_leadings = {}
             for p in self.find_latest_leadings():
                 try:
-                    base, _ = p.strip('/').split('/', 1)
+                    base = p.split('/')[1]
                 except Exception as exc:
                     print([exc, p])
                 else:
                     all_leadings.setdefault(base, []).append(p)
+            for k, v in all_leadings.items():
+                print("for --> {} <-- resume from --> {} <--".format(k, [ospath.dirname(i) for i in v]))
             # all_leadings = self.run_object.find_all_leadings(leadings)
-            print(all_leadings)
-            raise Exception("lol")
         else:
             leadings = []
             while len(leadings) <= 1:
@@ -92,19 +92,18 @@ class main_walker:
                 elif len(leadings) > 1:
                     break
 
-            print ("Root's leadings are: ", leadings)
+            print ("Root's leading directories are: ", leadings)
 
             all_leadings = self.run_object.find_all_leadings(leadings)
             lenght_of_subdirectories = sum(len(dirs) for _, (_, dirs) in all_leadings.items())
             print("{} subdirectories founded".format(lenght_of_subdirectories))
-            all_lead_names = [i.replace('/', '_')for _, (_, leads) in all_leadings.items() for i in leads]
+            all_lead_names = [i.replace('/', '#')for _, (_, leads) in all_leadings.items() for i in leads]
             with open(self.meta_path, 'w') as f:
                 json.dump({'subdirectory_number': lenght_of_subdirectories,
                            'traversed_subs': [],
                            'all_lead_names': all_lead_names}, f)
         try:
             pool = Pool()
-            print(all_leadings)
             pool.map(self.run_object.main_run, all_leadings.items())
         except Exception as exp:
             raise
@@ -132,28 +131,28 @@ class main_walker:
             meta = json.load(f)
             traversed_subs = meta['traversed_subs']
             all_lead_names = meta['all_lead_names']
-            exist_files = listdir(self.server_path)
+            exist_files = {i.split('.')[0] for i in listdir(self.server_path) if i not in {'leading_ftpwalker.csv', self.server_name + '.json'}}
         with open(ospath.join(self.server_path, 'leading_ftpwalker.csv')) as f:
             # Dirs that were contain one directory and have been preserved in leading_ftpwalker file
             ommited_dirs = ospath.join(*next(zip(*csv.reader(f))))
         for file_name in exist_files:
             # check if the directory is not traversed already
             if file_name not in traversed_subs:
-                f_name = ospath.join(self.server_path, file_name)
+                f_name = ospath.join(self.server_path, file_name + '.csv',)
                 try:
                     with open(f_name) as f:
                         csv_reader = csv.reader(f)
-                        lates_path = deque(csv_reader, maxlen=1).pop()[0].replace('_', '/')
-                        lates_path = ospath.join(ommited_dirs, lates_path)
+                        last_path = deque(csv_reader, maxlen=1).pop()[0].replace('#', '/')
+                        last_path = ospath.join(ommited_dirs, last_path)
                 except IndexError:
                     # file is empty
-                    lates_path = file_name.split('.')[0].replace('_', '/')
-                    lates_path = ospath.join(ommited_dirs, lates_path)
+                    last_path = file_name.split('.')[0].replace('#', '/')
+                    last_path = ospath.join(ommited_dirs, last_path)
                 finally:
-                    yield lates_path
+                    yield last_path
         # yield non-traversed directories
-        for f_name in set(all_lead_names).difference(traversed_subs):
-            yield ospath.join(ommited_dirs, f_name.split('.')[0].replace('_', '/'))
+        for f_name in set(all_lead_names).difference(exist_files):
+            yield ospath.join(ommited_dirs, f_name.split('.')[0].replace('#', '/'))
 
     def create_json(self, dictionary, name):
         """

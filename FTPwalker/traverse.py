@@ -18,7 +18,7 @@ import socket
 from os import path as ospath
 import json
 import csv
-
+import threading
 
 class Run(object):
     """
@@ -98,7 +98,6 @@ class Run(object):
            :rtype: None
 
         """
-        print(args)
         if self.resume:
             _path = args
         else:
@@ -113,19 +112,22 @@ class Run(object):
             # file_names = listdir(self.server_path)
             fw = walker.ftp_walker(connection, self.resume)
             if self.resume:
-                walker_obj = fw.walk(_path)
+                walker_obj = fw.walk_resume(_path, self.root)
                 next(walker_obj)
             else:
                 walker_obj = fw.walk(root)
-            root_name = ospath.basename(_path).replace('/', '_')
+            root_name = ospath.basename(_path)
+            # csv_writer_lock = threading.Lock()
             with open('{}/{}.csv'.format(self.server_path, root_name), 'a+') as f:
                 csv_writer = csv.writer(f)
                 try:
-                    for _path, _, files in walker_obj:
+                    for _path, dirs, files in walker_obj:
                         # self.all_path.put((_path, files))
+                        # with csv_writer_lock:
                         csv_writer.writerow([_path] + files)
-                except:
-                    pass
+                        print("Path: {} <-------> dirs: {}".format(_path, dirs))
+                except Exception as exc:
+                    print(exc)
                 else:
                     with open(self.meta_path, 'r+') as f:
                         try:

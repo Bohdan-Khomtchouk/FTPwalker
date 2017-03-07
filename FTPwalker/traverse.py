@@ -59,7 +59,7 @@ class Run(object):
         self.meta_path = meta_path
         self.resume = resume
 
-    def find_leading(self, top, thread_flag=True):
+    def find_leading(self, top):
         """
         .. py:attribute:: find_leading()
 
@@ -72,20 +72,11 @@ class Run(object):
 
         """
         print ("Find leading...")
-        length = 2
         conn = ftplib.FTP(self.server_url)
         conn.login()
         fw = walker.ftp_walker(conn)
-        for p, dirs, files in fw.walk(top):
-            length = len(dirs)
-            base = [(p, files)]
-            if length >= 1:
-                p = '/'.join(p.split('/')[1:])
-                length = length
-                return base, dirs
-            elif thread_flag:
-                return base, []
-        return base, []
+        dirs, files = fw.listdir(top)
+        return files, dirs
         conn.quit()
 
     def traverse_branch(self, args):

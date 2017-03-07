@@ -34,20 +34,19 @@ class main_walker:
         self.run_object = None
 
     def find_leading_dirs(self, top):
-        base, leadings = self.run_object.find_leading(top, thread_flag=False)
-        _path, files = base[0]
+        files, dirs = self.run_object.find_leading(top)
         # Preserve the current directory path and files before deviding them between
         # threads and processors.
         with open('{}/{}.csv'.format(self.server_path, "leading_ftpwalker"), 'a+') as f:
             csv_writer = csv.writer(f)
             try:
                 # self.all_path.put((_path, files))
-                csv_writer.writerow([_path] + files)
+                csv_writer.writerow([top] + files)
             except:
                 pass
 
-        leadings = [ospath.join(_path, i.strip('/')) for i in leadings]
-        return leadings
+        dirs = [ospath.join(top, i.strip('/')) for i in dirs]
+        return dirs
 
     def Process_dispatcher(self, resume):
         """
@@ -75,22 +74,19 @@ class main_walker:
                 except Exception as exc:
                     print([exc, p])
                 else:
-                    all_leadings.setdefault(base, []).append(p)
+                    all_leadings.setdefault(base, set()).add(p)
             for k, v in all_leadings.items():
-                print("for --> {} <-- resume from --> {} <--".format(k, [ospath.dirname(i) for i in v]))
+                print("for --> {} <-- resume from --> {} <--".format(k, {ospath.dirname(i) for i in v}))
             # all_leadings = self.run_object.find_all_leadings(leadings)
         else:
-            leadings = []
+            leadings = self.find_leading_dirs(self.root)
+            if len(leadings) == 0:
+                print("Empty directory!")
+                return
             while len(leadings) <= 1:
-                leadings = self.find_leading_dirs(self.root)
-                if len(leadings) == 0:
-                    print("Empty directory!")
-                    return
-                if len(leadings) == 1:
                     top = leadings[0]
+                    print("Just one leading founded({}). Continue finding...".format(top))
                     leadings = self.find_leading_dirs(top)
-                elif len(leadings) > 1:
-                    break
 
             print ("Root's leading directories are: ", leadings)
 

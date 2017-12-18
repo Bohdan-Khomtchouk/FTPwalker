@@ -19,9 +19,9 @@ def initialize(executable, *args):
 
 def start(executable, *args):
     initialize(executable, *args)
-    instart(Daemon, 'FTPwalker', 'FTPwalker', stay_alive=False)
+    instart(Daemon, 'FTPflow', 'FTPflow', stay_alive=False)
 
 
 def stop():
     import os
-    os.system("sc delete FTPwalker")
+    os.system("sc delete FTPflow")

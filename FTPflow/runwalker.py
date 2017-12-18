@@ -3,7 +3,7 @@
 runwalker.py
 =====
 
-This module is contain the `ftpwalker` class which is responsible for
+This module is contain the `FTPflow` class which is responsible for
 running a new walker.
 
 ============================
@@ -17,11 +17,11 @@ import checkplatform
 import re
 
 
-class ftpwalker:
+class FTPflow:
     """
     ==============
 
-    ``ftpwalker``
+    ``FTPflow``
     ----------
     You can pass following arguments to class's caller at instantiation's time.
     server_name: The name of server
@@ -29,7 +29,7 @@ class ftpwalker:
     root: The root path that you want to start the traversing from.
     daemon: Daemonization flag, which should be a boolean value (True, False)
     json_path: Corresponding path for saving the final json file.
-    .. py:class:: ftpwalker()
+    .. py:class:: FTPflow()
 
     .. note::
 
@@ -74,7 +74,7 @@ class ftpwalker:
         self.daemon = daemon
         try:
             home = path.expanduser("~")
-            server_path = path.join(home, "FTPwalkerfile/", self.name)
+            server_path = path.join(home, "FTPflowfile/", self.name)
         except Exception as exc:
             raise Exception("Please enter a valid name. {}".format(exc))
         else:

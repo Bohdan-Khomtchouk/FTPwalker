@@ -12,14 +12,14 @@ Traverse the FTP servers with BFS algorithm.
 from os import path as ospath
 
 
-class ftp_walker(object):
+class FTP_flow(object):
     """
     ==============
 
-    ``ftp_walker``
+    ``FTP_flow``
     ----------
 
-    .. py:class:: ftp_walker()
+    .. py:class:: FTP_flow()
 
     This class is contain corresponding functions for traversing the FTP
     servers using BFS algorithm.

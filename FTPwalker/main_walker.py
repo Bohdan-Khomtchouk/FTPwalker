@@ -80,13 +80,16 @@ class main_walker:
             # all_leadings = self.run_object.find_all_leadings(leadings)
         else:
             leadings = self.find_leading_dirs(self.root)
-            if len(leadings) == 0:
-                print("Empty directory!")
-                return
-            while len(leadings) <= 1:
-                    top = leadings[0]
-                    print("Just one leading founded({}). Continue finding...".format(top))
-                    leadings = self.find_leading_dirs(top)
+            while True:
+                if len(leadings) == 0:
+                    print("Empty directory!")
+                    return
+                if len(leadings) == 1:
+                        top = leadings[0]
+                        print("Just one leading founded({}). Continue finding...".format(top))
+                        leadings = self.find_leading_dirs(top)
+                else:
+                    break
 
             print ("Root's leading directories are: ", leadings)
 
